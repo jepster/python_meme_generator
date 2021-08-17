@@ -9,6 +9,9 @@ class PDFIngestor(IngestorInterface):
     @classmethod
     def parse(cls, path):
         text_file = './pdf_to_text.txt'
+        with open('pdf_to_text.txt', 'w') as fp:
+            pass
+
         cmd = f"./pdftotext -layout -nopgbrk {path} {text_file}"
         subprocess.call(cmd, shell=True, stderr=subprocess.STDOUT)
         quotes = TextIngestor.parse(text_file)

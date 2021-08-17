@@ -6,3 +6,4 @@
 .DS_Store
 **/bin
 pyvenv.cfg
+static
