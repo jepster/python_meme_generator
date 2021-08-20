@@ -49,20 +49,39 @@ def meme_form():
     return render_template('meme_form.html')
 
 
+def is_image_downloadable(url):
+    """
+    Does the url contain a downloadable resource
+    """
+    h = requests.head(url, allow_redirects=True)
+    header = h.headers
+    content_type = header.get('content-type')
+    if 'image' in content_type.lower():
+        return True
+    return False
+
+
 @app.route('/create', methods=['POST'])
 def meme_post():
     """ Create a user defined meme """
+    img = "./temp_image.jpg"
 
-    # @TODO:
-    # 1. Use requests to save the image from the image_url
-    #    form param to a temp local file.
-    # 2. Use the meme object to generate a meme using this temp
-    #    file and the body and author form paramaters.
-    # 3. Remove the temporary saved image.
+    image_url = request.form.get("image_url")
 
-    path = None
+    if is_image_downloadable(image_url) == False:
+        return render_template('meme_form.html', error_message='The provided url does not point to a valid image. Please try again.')
 
-    return render_template('meme.html', path=path)
+    img_data = requests.get(image_url, stream=True).content
+
+    with open(img, "wb") as f:
+        f.write(img_data)
+
+    body = request.form.get("body", "")
+    author = request.form.get("author", "")
+    path = meme.make_meme(img, body, author)
+    print(path)
+    os.remove(img)
+    return render_template("meme.html", path=path)
 
 
 if __name__ == "__main__":
