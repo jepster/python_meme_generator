@@ -1,5 +1,4 @@
 import os
-import random
 import textwrap
 
 from PIL import Image, ImageFont, ImageDraw
@@ -33,8 +32,11 @@ class MemeEngine:
         # Draw the text on image
         draw = ImageDraw.Draw(img)
 
-        for text_piece in self.create_text_chunks(text):
-            draw.text((30, text_position), text_piece.strip(), fill, font1,
+        my_wrap = textwrap.TextWrapper(width=25)
+        wrap_list = my_wrap.wrap(text)
+
+        for text_chunk in wrap_list:
+            draw.text((30, text_position), text_chunk, fill, font1,
                       stroke_width=1, stroke_fill=stroke_fill)
             text_position += 35
 
