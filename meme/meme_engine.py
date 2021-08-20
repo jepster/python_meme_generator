@@ -1,5 +1,6 @@
 import os
 import random
+import textwrap
 
 from PIL import Image, ImageFont, ImageDraw
 
@@ -25,16 +26,25 @@ class MemeEngine:
         # Select font-family, font-size, color and position to draw text
         font1 = ImageFont.truetype("./_data/Fonts/Roboto-Bold.ttf", 22)
         font2 = ImageFont.truetype("./_data/Fonts/Roboto-Medium.ttf", 18)
-        text_position = random.choice(range(30, height - 50))
+        text_position = 25
         fill = (0, 0, 0)
         stroke_fill = (255, 255, 255)
 
         # Draw the text on image
         draw = ImageDraw.Draw(img)
-        draw.text((30, text_position), text, fill, font1,
-                  stroke_width=1, stroke_fill=stroke_fill)
-        draw.text((40, text_position + 25), f"- {author}", fill, font2,
+
+        for text_piece in self.create_text_chunks(text):
+            draw.text((30, text_position), text_piece.strip(), fill, font1,
+                      stroke_width=1, stroke_fill=stroke_fill)
+            text_position += 35
+
+        draw.text((30, text_position + 25), f"- {author}", fill, font2,
                   stroke_width=1, stroke_fill=stroke_fill)
 
         img.save(outfile, "JPEG")
         return outfile
+
+    def create_text_chunks(self, text):
+        x = 20
+        text_pieces = [text[y - x:y] for y in range(x, len(text) + x, x)]
+        return text_pieces

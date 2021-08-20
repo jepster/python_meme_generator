@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 extensions = {
     "TEXT": ".txt",
     "CSV": ".csv",
@@ -6,11 +8,11 @@ extensions = {
 }
 
 
-class IngestorInterface:
+class IngestorInterface(ABC):
     @classmethod
     def verify(cls, file_extension):
         return file_extension in extensions.values()
 
-    @classmethod
+    @abstractmethod
     def parse(cls, path):
         pass
